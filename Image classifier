@@ -1,0 +1,100 @@
+import numpy as np 
+import pandas as pd 
+import matplotlib.pyplot as plt
+%matplotlib inline
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import SGDClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.naive_bayes import GaussianNB,MultinomialNB,BernoulliNB
+from sklearn.model_selection import train_test_split as tts
+from sklearn.metrics import f1_score,accuracy_score
+
+data = pd.read_csv('mnist_train.csv')
+data.head()
+
+# Shape of dataset
+data.shape
+
+# Extracting data from dataset
+a = data.iloc[3,1:].values
+# Reshape 
+a= a.reshape(28,28).astype('uint8')
+# Plotting in matplotlib
+plt.imshow(a)
+
+# Checking for Null Values
+data.isnull().sum()
+
+# Checking Datatypes of all columns 
+data.dtypes
+
+# Seperating labels and values
+x = data.drop(['label'],axis=1)
+y = data['label']
+
+# Looking at features and target variable
+x.head()
+
+x.shape
+
+y.head()
+
+y.shape
+
+# creating training and validation sets 
+train_x,test_x,train_y,test_y = tts(x,y,test_size=0.2,random_state=96)
+
+# Checking data
+train_x.head()
+
+train_y.head()
+
+print(train_x.shape)
+print(train_y.shape)
+
+index = ['Random Forest Classifier','Logistic Regression','SGD Classifier','KNN-Classifier','Decision Tree Classifier','Naive Bayes']
+col = ['Accuracy']
+model = pd.DataFrame(index=index,columns=col)
+
+# Calling classifier
+rf = RandomForestClassifier(n_estimators=100)
+
+# fitting data
+rf.fit(train_x,train_y)
+
+# Checking Predictions
+pred = rf.predict(test_x)
+
+# Checking f1-score and accuracy
+f1 = f1_score(pred,test_y,average='weighted')
+print("F1 Score : ",f1)
+acc_rf = accuracy_score(pred,test_y)
+print("Accuracy : ",acc_rf)
+
+model.iat[0,0] = acc_rf
+model
+
+# Calling classifier
+lr = LogisticRegression(random_state=96)
+
+# fitting data
+lr.fit(train_x,train_y)
+
+pred = lr.predict(test_x)
+# Checking f1-score and accuracy
+f1 = f1_score(pred,test_y,average='weighted')
+print("F1 Score : ",f1)
+acc_lr = accuracy_score(pred,test_y)
+print("Accuracy : ",acc_lr)
+
+model.iat[1,0] = acc_lr
+model
+
+pred = bnb.predict(test_x)
+# Checking f1-score and accuracy
+f1 = f1_score(pred,test_y,average='weighted')
+print("F1 Score : ",f1)
+acc_bnb = accuracy_score(pred,test_y)
+print("Accuracy : ",acc_bnb)
